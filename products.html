@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - MyShop</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Your custom CSS -->
+  <link rel="stylesheet" href="product.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">MyShop</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
+          <li class="nav-item position-relative">
+            <a class="nav-link" href="cart.html">
+              Cart 
+              <span class="badge bg-danger" id="cartCount">0</span>
+            </a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="checkout.html">Checkout</a></li>
+        </ul>
+        <form class="d-flex ms-3 position-relative">
+          <input class="form-control me-2" type="search" placeholder="Search products..." id="searchBar" autocomplete="off">
+          <div class="list-group position-absolute w-100" id="searchResults" style="z-index: 1000;"></div>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="container my-4">
+    <h2 class="fw-bold text-center">Our Products</h2>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="container">
+    <div class="row" id="productGrid">
+      <!-- Product cards will be dynamically generated -->
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Search JS -->
+  <script src="js/script.js"></script>
+
+  <!-- Product & Add to Cart JS -->
+  <script>
+    // Product data
+    const products = [
+      {name: "Shoes", price: 1200, img: "images/nike.jpg"},
+      {name: "T-shirt", price: 499, img: "images/t-shirt.jpg"},
+      {name: "Laptop", price: 55000, img: "images/laptop.jpg"},
+      {name: "Headphones", price: 1999, img: "images/headphones.jpg"},
+      {name: "Smartphone", price: 24999, img: "images/smartphone.jpg"},
+      {name: "Watch", price: 2999, img: "images/watch.jpg"},
+      {name: "Bag", price: 999, img: "images/bag.jpg"},
+      {name: "Sunglasses", price: 799, img: "images/sunglass.jpg"}
+    ];
+
+    // Generate product cards
+    const productGrid = document.getElementById("productGrid");
+    products.forEach((p, index) => {
+      const col = document.createElement("div");
+      col.className = "col-md-3 col-sm-6 mb-4";
+      col.innerHTML = `
+        <div class="card h-100">
+          <img src="${p.img}" class="card-img-top" alt="${p.name}">
+          <div class="card-body text-center">
+            <h5 class="card-title">${p.name}</h5>
+            <p class="card-text">₹${p.price}</p>
+            <button class="btn btn-primary w-100">Add to Cart</button>
+          </div>
+        </div>
+      `;
+      productGrid.appendChild(col);
+    });
+
+    // Mini cart functionality with localStorage
+    const cartCount = document.getElementById("cartCount");
+    const addButtons = document.querySelectorAll(".card button");
+
+    addButtons.forEach((btn, index) => {
+      btn.addEventListener("click", () => {
+        // Get existing cart from localStorage or empty array
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // Add product
+        cart.push(products[index]);
+
+        // Save back to localStorage
+        localStorage.setItem("cart", JSON.stringify(cart));
+
+        // Update navbar cart counter
+        cartCount.textContent = cart.length;
+
+        // Optional feedback
+        btn.textContent = "Added ✓";
+        btn.disabled = true;
+      });
+    });
+
+    // On page load, show correct cart count
+    document.addEventListener("DOMContentLoaded", () => {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cartCount.textContent = cart.length;
+    });
+  </script>
+
+</body>
+</html>
+
